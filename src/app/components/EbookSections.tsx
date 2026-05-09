@@ -90,8 +90,6 @@ import img82 from '../../imports/83.png';
 import img83 from '../../imports/83.png';
 import img84 from '../../imports/84.png';
 import img85 from '../../imports/85.png';
-import img86 from '../../imports/86.png';
-import img87 from '../../imports/87.png';
 import img88 from '../../imports/88.png';
 import img89 from '../../imports/89.png';
 import img90 from '../../imports/90.png';
@@ -111,8 +109,6 @@ import img103 from '../../imports/103.png';
 import img104 from '../../imports/104.png';
 import img105 from '../../imports/105.png';
 import img106 from '../../imports/106.png';
-import img107 from '../../imports/107.png';
-import img108 from '../../imports/108.png';
 import img109 from '../../imports/109.png';
 import img110 from '../../imports/110.png';
 import img111 from '../../imports/111.png';
@@ -282,15 +278,15 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
       bgGradient: 'from-[#8A47A8]/10 to-[#A062BF]/10',
       frases: [
         { text: '', bgImage: img109, likes: 102 },
-        { text: '', bgImage: img100, likes: 76 },
-        { text: '', bgImage: img101, likes: 94 },
-        { text: '', bgImage: img102, likes: 118 },
-        { text: '', bgImage: img103, likes: 83 },
-        { text: '', bgImage: img104, likes: 89 },
-        { text: '', bgImage: img105, likes: 102 },
-        { text: '', bgImage: img106, likes: 76 },
-        { text: '', bgImage: img107, likes: 102 },
-        { text: '', bgImage: img108, likes: 76 },
+        { text: '', bgImage: img110, likes: 76 },
+        { text: '', bgImage: img111, likes: 94 },
+        { text: '', bgImage: img112, likes: 118 },
+        { text: '', bgImage: img113, likes: 83 },
+        { text: '', bgImage: img114, likes: 89 },
+        { text: '', bgImage: img115, likes: 102 },
+        { text: '', bgImage: img116, likes: 76 },
+        { text: '', bgImage: img117, likes: 102 },
+        { text: '', bgImage: img118, likes: 76 },
         { text: '', bgImage: img109, likes: 94 },
         { text: '', bgImage: img110, likes: 118 },
         { text: '', bgImage: img111, likes: 83 },
