@@ -2,6 +2,7 @@
 import React, { ReactNode } from 'react';
 // or for specific imports:
 import { useState, useEffect } from 'react';
+import { Sprout, Lightbulb, Zap, Rocket, TrendingUp } from 'lucide-react';
 
 
 const Icon = ({ className, children }: { className?: string; children: ReactNode }) => (
@@ -10,11 +11,6 @@ const Icon = ({ className, children }: { className?: string; children: ReactNode
   </span>
 );
 
-const Sprout = (props: { className?: string }) => <Icon {...props}>🌱</Icon>;
-const Lightbulb = (props: { className?: string }) => <Icon {...props}>💡</Icon>;
-const Zap = (props: { className?: string }) => <Icon {...props}>⚡</Icon>;
-const Rocket = (props: { className?: string }) => <Icon {...props}>🚀</Icon>;
-const TrendingUp = (props: { className?: string }) => <Icon {...props}>📈</Icon>;
 
 import img8 from '../../imports/8.png';
 import img9 from '../../imports/9.png';
@@ -155,7 +151,7 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
         { text: '', bgImage: img12, likes: 118 },
         { text: '', bgImage: img13, likes: 83 },
         { text: '', bgImage: img14, likes: 89 },
-        { text: '', bgImage: img41, likes: 102 },
+        { text: '', bgImage: img15, likes: 102 },
         { text: '', bgImage: img16, likes: 76 },
         { text: '', bgImage: img17, likes: 94 },
         { text: '', bgImage: img18, likes: 118 },
