@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 // or for specific imports:
 import { useState, useEffect } from 'react';
 
+
 const Icon = ({ className, children }: { className?: string; children: ReactNode }) => (
   <span className={className} aria-hidden="true">
     {children}
@@ -57,7 +58,7 @@ import img48 from '../../imports/48.png';
 import img49 from '../../imports/49.png';
 import img50 from '../../imports/50.png';
 import img51 from '../../imports/51.png';
-import img52 from '../../imports/53.png';
+import img52 from '../../imports/52.png';
 import img53 from '../../imports/53.png';
 import img54 from '../../imports/54.png';
 import img55 from '../../imports/55.png';
@@ -67,6 +68,68 @@ import img58 from '../../imports/58.png';
 import img59 from '../../imports/59.png';
 import img60 from '../../imports/60.png';
 import img61 from '../../imports/61.png';
+import img64 from '../../imports/64.png';
+import img65 from '../../imports/65.png';
+import img66 from '../../imports/66.png';
+import img67 from '../../imports/67.png';
+import img68 from '../../imports/68.png';
+import img69 from '../../imports/69.png';
+import img70 from '../../imports/70.png';
+import img71 from '../../imports/71.png';
+import img72 from '../../imports/72.png';
+import img73 from '../../imports/73.png';
+import img74 from '../../imports/74.png';
+import img75 from '../../imports/75.png';
+import img76 from '../../imports/76.png';
+import img77 from '../../imports/77.png';
+import img78 from '../../imports/78.png';
+import img79 from '../../imports/79.png';
+import img80 from '../../imports/80.png';
+import img81 from '../../imports/81.png';
+import img82 from '../../imports/83.png';
+import img83 from '../../imports/83.png';
+import img84 from '../../imports/84.png';
+import img85 from '../../imports/85.png';
+import img86 from '../../imports/86.png';
+import img87 from '../../imports/87.png';
+import img88 from '../../imports/88.png';
+import img89 from '../../imports/89.png';
+import img90 from '../../imports/90.png';
+import img91 from '../../imports/91.png';
+import img92 from '../../imports/92.png';
+import img93 from '../../imports/93.png';
+import img94 from '../../imports/94.png';
+import img95 from '../../imports/95.png';
+import img96 from '../../imports/96.png';
+import img97 from '../../imports/97.png';
+import img98 from '../../imports/98.png';
+import img99 from '../../imports/99.png';
+import img100 from '../../imports/100.png';
+import img101 from '../../imports/101.png';
+import img102 from '../../imports/102.png';
+import img103 from '../../imports/103.png';
+import img104 from '../../imports/104.png';
+import img105 from '../../imports/105.png';
+import img106 from '../../imports/106.png';
+import img107 from '../../imports/107.png';
+import img108 from '../../imports/108.png';
+import img109 from '../../imports/109.png';
+import img110 from '../../imports/110.png';
+import img111 from '../../imports/111.png';
+import img112 from '../../imports/112.png';
+import img113 from '../../imports/113.png';
+import img114 from '../../imports/114.png';
+import img115 from '../../imports/115.png';
+import img116 from '../../imports/116.png';
+import img117 from '../../imports/117.png';
+import img118 from '../../imports/118.png';
+import img119 from '../../imports/119.png';
+import img120 from '../../imports/120.png';
+import img121 from '../../imports/121.png';
+import img122 from '../../imports/122.png';
+import img123 from '../../imports/123.png';
+import img124 from '../../imports/124.png';
+import img125 from '../../imports/125.png';
 
 interface EbookSectionsProps {
   onSectionClick: (section: {
@@ -159,12 +222,28 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
       gradient: 'from-[#1A43CF] to-[#3D5FDB]',
       bgGradient: 'from-[#1A43CF]/10 to-[#3D5FDB]/10',
       frases: [
-        { text: 'Una idea sin acción es solo un sueño', bgImage: 'https://images.unsplash.com/photo-1679193559904-aea078fa7afd?q=80&w=600', likes: 201 },
-        { text: 'Ejecuta rápido, aprende más rápido', bgImage: 'https://images.unsplash.com/photo-1665652475985-37e285aeff53?q=80&w=600', likes: 178 },
-        { text: 'El progreso se mide en prototipos, no en planes perfectos', bgImage: 'https://images.unsplash.com/photo-1669465716237-9cb999b47773?q=80&w=600', likes: 189 },
-        { text: 'Valida temprano, fracasa barato', bgImage: 'https://images.unsplash.com/photo-1617550523898-600c24418b75?q=80&w=600', likes: 195 },
-        { text: 'La acción convierte ideas en realidad', bgImage: 'https://images.unsplash.com/photo-1770954098194-5521c9eb68a1?q=80&w=600', likes: 212 },
-        { text: 'Prueba, mide, ajusta, repite', bgImage: 'https://images.unsplash.com/photo-1617550529026-df6214fe8b18?q=80&w=600', likes: 183 }
+        { text: '', bgImage: img64, likes: 89 },
+        { text: '', bgImage: img65, likes: 102 },
+        { text: '', bgImage: img66, likes: 76 },
+        { text: '', bgImage: img67, likes: 94 },
+        { text: '', bgImage: img68, likes: 118 },
+        { text: '', bgImage: img69, likes: 83 },
+        { text: '', bgImage: img70, likes: 89 },
+        { text: '', bgImage: img71, likes: 102 },
+        { text: '', bgImage: img72, likes: 76 },
+        { text: '', bgImage: img73, likes: 94 },
+        { text: '', bgImage: img74, likes: 118 },
+        { text: '', bgImage: img75, likes: 83 },
+        { text: '', bgImage: img76, likes: 89 },
+        { text: '', bgImage: img77, likes: 102 },
+        { text: '', bgImage: img78, likes: 76 },
+        { text: '', bgImage: img79, likes: 94 },
+        { text: '', bgImage: img80, likes: 118 },
+        { text: '', bgImage: img81, likes: 83 },
+        { text: '', bgImage: img82, likes: 89 },
+        { text: '', bgImage: img83, likes: 102 },
+        { text: '', bgImage: img84, likes: 76 },
+        { text: '', bgImage: img85, likes: 94 }
       ]
     },
     {
@@ -173,13 +252,26 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
       description: 'Cuando la innovación trasciende lo individual para convertirse en un impacto colectivo.',
       gradient: 'from-[#EE5A41] to-[#F27D68]',
       bgGradient: 'from-[#EE5A41]/10 to-[#F27D68]/10',
-      frases: [
-        { text: 'El momento de lanzar es ahora', bgImage: 'https://images.unsplash.com/photo-1771732267145-835666f3b291?q=80&w=600', likes: 234 },
-        { text: 'Escala lo que funciona, descarta lo que no', bgImage: 'https://images.unsplash.com/photo-1773695801862-dbfa4fba6c74?q=80&w=600', likes: 198 },
-        { text: 'La perfección es enemiga del lanzamiento', bgImage: 'https://images.unsplash.com/photo-1771732267123-10624d6c6f20?q=80&w=600', likes: 256 },
-        { text: 'Crece con intención, escala con estrategia', bgImage: 'https://images.unsplash.com/photo-1617550525187-82c59482bbc5?q=80&w=600', likes: 221 },
-        { text: 'El impacto real sucede cuando implementas', bgImage: 'https://images.unsplash.com/photo-1773761193222-4ad3b5ac23dc?q=80&w=600', likes: 243 },
-        { text: 'No esperes estar listo, hazlo mientras aprendes', bgImage: 'https://images.unsplash.com/photo-1773751392423-212463aa28c2?q=80&w=600', likes: 209 }
+       frases: [
+        { text: '', bgImage: img88, likes: 89 },
+        { text: '', bgImage: img89, likes: 102 },
+        { text: '', bgImage: img90, likes: 76 },
+        { text: '', bgImage: img91, likes: 94 },
+        { text: '', bgImage: img92, likes: 118 },
+        { text: '', bgImage: img93, likes: 83 },
+        { text: '', bgImage: img94, likes: 89 },
+        { text: '', bgImage: img95, likes: 102 },
+        { text: '', bgImage: img96, likes: 76 },
+        { text: '', bgImage: img97, likes: 102 },
+        { text: '', bgImage: img98, likes: 76 },
+        { text: '', bgImage: img99, likes: 94 },
+        { text: '', bgImage: img100, likes: 118 },
+        { text: '', bgImage: img101, likes: 83 },
+        { text: '', bgImage: img102, likes: 89 },
+        { text: '', bgImage: img103, likes: 102 },
+        { text: '', bgImage: img104, likes: 76 },
+        { text: '', bgImage: img105, likes: 94 },
+        { text: '', bgImage: img106, likes: 94 }
       ]
     },
     {
@@ -189,12 +281,33 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
       gradient: 'from-[#8A47A8] to-[#A062BF]',
       bgGradient: 'from-[#8A47A8]/10 to-[#A062BF]/10',
       frases: [
-        { text: 'Cada final es el inicio de una nueva innovación', bgImage: 'https://images.unsplash.com/photo-1679193559904-aea078fa7afd?q=80&w=600', likes: 167 },
-        { text: 'El aprendizaje continuo es el secreto de la evolución', bgImage: 'https://images.unsplash.com/photo-1665652475985-37e285aeff53?q=80&w=600', likes: 154 },
-        { text: 'Reflexiona, aprende, mejora, repite', bgImage: 'https://images.unsplash.com/photo-1669465716237-9cb999b47773?q=80&w=600', likes: 178 },
-        { text: 'Los errores son datos para tu próximo éxito', bgImage: 'https://images.unsplash.com/photo-1617550523898-600c24418b75?q=80&w=600', likes: 189 },
-        { text: 'La innovación nunca termina, solo evoluciona', bgImage: 'https://images.unsplash.com/photo-1770954098194-5521c9eb68a1?q=80&w=600', likes: 196 },
-        { text: 'Celebra el progreso, abraza la mejora continua', bgImage: 'https://images.unsplash.com/photo-1617550529026-df6214fe8b18?q=80&w=600', likes: 172 }
+        { text: '', bgImage: img109, likes: 102 },
+        { text: '', bgImage: img100, likes: 76 },
+        { text: '', bgImage: img101, likes: 94 },
+        { text: '', bgImage: img102, likes: 118 },
+        { text: '', bgImage: img103, likes: 83 },
+        { text: '', bgImage: img104, likes: 89 },
+        { text: '', bgImage: img105, likes: 102 },
+        { text: '', bgImage: img106, likes: 76 },
+        { text: '', bgImage: img107, likes: 102 },
+        { text: '', bgImage: img108, likes: 76 },
+        { text: '', bgImage: img109, likes: 94 },
+        { text: '', bgImage: img110, likes: 118 },
+        { text: '', bgImage: img111, likes: 83 },
+        { text: '', bgImage: img112, likes: 89 },
+        { text: '', bgImage: img113, likes: 102 },
+        { text: '', bgImage: img114, likes: 76 },
+        { text: '', bgImage: img115, likes: 94 },
+        { text: '', bgImage: img116, likes: 94 },
+        { text: '', bgImage: img117, likes: 102 },
+        { text: '', bgImage: img118, likes: 76 },
+        { text: '', bgImage: img119, likes: 94 },
+        { text: '', bgImage: img120, likes: 118 },
+        { text: '', bgImage: img121, likes: 83 },
+        { text: '', bgImage: img122, likes: 89 },
+        { text: '', bgImage: img123, likes: 102 },
+        { text: '', bgImage: img124, likes: 76 },
+        { text: '', bgImage: img125, likes: 94 }
       ]
     }
   ];
