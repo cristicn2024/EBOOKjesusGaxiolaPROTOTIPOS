@@ -2,8 +2,10 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  
 
   return (
+   
     <footer className="bg-gradient-to-br from-gray-50 via-white to-blue-50 py-16 px-4 relative overflow-hidden border-t border-gray-200">
 
       {/* Elementos decorativos sutiles */}
@@ -26,10 +28,10 @@ export default function Footer() {
           <div className="flex flex-col md:items-end">
             <h4 className="text-sm font-semibold uppercase tracking-widest text-gray-500 mb-6">Sígueme</h4>
             <div className="flex gap-3">
-              <SocialLink href="#" icon={<Facebook />} hoverColor="hover:bg-[#1A43CF]" />
-              <SocialLink href="#" icon={<Twitter />} hoverColor="hover:bg-[#547C5C]" />
-              <SocialLink href="#" icon={<Instagram />} hoverColor="hover:bg-[#EE5A41]" />
-              <SocialLink href="#" icon={<Linkedin />} hoverColor="hover:bg-[#1A43CF]" />
+              <SocialLink href="https://www.facebook.com/share/1Ekfy4spSL/?mibextid=wwXIfr" icon={<Facebook />} hoverColor="hover:bg-[#1A43CF]" />
+              <SocialLink href="https://x.com/jesusgaxiola" icon={<Twitter />} hoverColor="hover:bg-[#547C5C]" />
+              <SocialLink href="https://www.instagram.com/_jesusgaxiola?igsh=MTczdnVkYjllZzc4dw==" icon={<Instagram />} hoverColor="hover:bg-[#EE5A41]" />
+              <SocialLink href="https://mx.linkedin.com/in/jesusgaxiola" icon={<Linkedin />} hoverColor="hover:bg-[#1A43CF]" />
               <SocialLink href="mailto:contacto@mindsetinnovador.com" icon={<Mail />} hoverColor="hover:bg-[#8A47A8]" />
             </div>
           </div>
@@ -48,9 +50,10 @@ function SocialLink({ href, icon, hoverColor }) {
   return (
     <a
       href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       className={`w-11 h-11 bg-white border border-gray-200 rounded-xl flex items-center justify-center transition-all duration-300 hover:-translate-y-1 ${hoverColor} hover:shadow-lg text-gray-600 hover:text-white`}
     >
-      {/* Clonamos el icono para asegurarnos que tenga el tamaño correcto */}
       {window.React && window.React.cloneElement(icon, { className: "w-5 h-5" })}
       {!window.React && icon}
     </a>
