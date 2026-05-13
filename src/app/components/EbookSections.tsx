@@ -123,27 +123,51 @@ import img123 from '../../imports/123.png';
 import img124 from '../../imports/124.png';
 import img125 from '../../imports/125.png';
 
-interface EbookSectionsProps {
-  onSectionClick: (section: {
-    title: string;
-    gradient: string;
-    frases: Array<{
-      text: string;
-      bgImage: string;
-      likes: number;
-    }>;
-  }) => void;
+export interface EbookPhrase {
+  id: string;
+  text: string;
+  bgImage: string;
+  likes: number;
 }
 
-export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
-  const sections = [
+export interface EbookSection {
+  id: string;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  gradient: string;
+  bgGradient: string;
+  frases: EbookPhrase[];
+}
+
+export interface PhraseShareTarget {
+  sectionId: string;
+  phraseId: string;
+  imageUrl: string;
+}
+
+const withPhraseIds = (
+  sectionId: string,
+  frases: Array<Omit<EbookPhrase, 'id'>>
+): EbookPhrase[] =>
+  frases.map((frase, index) => ({
+    ...frase,
+    id: `${sectionId}-${index + 1}`,
+  }));
+
+interface EbookSectionsProps {
+  onSectionClick: (section: EbookSection) => void;
+}
+
+export const ebookSections: EbookSection[] = [
     {
+      id: 'semilla',
       icon: Sprout,
       title: 'Antes de Innovar: La Semilla',
       description: 'Donde todo comienza con la curiosidad y la capacidad de ver lo que otros no ven.',
       gradient: 'from-[#547C5C] to-[#679073]',
       bgGradient: 'from-[#547C5C]/10 to-[#679073]/10',
-      frases: [
+      frases: withPhraseIds('semilla', [
         { text: '', bgImage: img8, likes: 89 },
         { text: '', bgImage: img9, likes: 102 },
         { text: '', bgImage: img10, likes: 76 },
@@ -168,15 +192,16 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
         { text: '', bgImage: img29, likes: 94 },
         { text: '', bgImage: img30, likes: 118 },
         { text: '', bgImage: img31, likes: 83 }
-      ]
+      ])
     },
     {
+      id: 'ideacion',
       icon: Lightbulb,
       title: 'Encender la Chispa: Ideación y Exploración',
       description: 'El terreno del caos creativo y la valentía de experimentar.',
       gradient: 'from-[#C6A13B] to-[#D4B456]',
       bgGradient: 'from-[#C6A13B]/10 to-[#D4B456]/10',
-       frases: [
+       frases: withPhraseIds('ideacion', [
         { text: '', bgImage: img34, likes: 89 },
         { text: '', bgImage: img35, likes: 102 },
         { text: '', bgImage: img36, likes: 76 },
@@ -205,15 +230,16 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
         { text: '', bgImage: img59, likes: 94 },
         { text: '', bgImage: img60, likes: 118 },
         { text: '', bgImage: img61, likes: 83 }
-      ]
+      ])
     },
     {
+      id: 'validacion',
       icon: Zap,
       title: 'En Acción: Desarrollo y Validación',
       description: 'El momento en que la realidad pone a prueba las ideas',
       gradient: 'from-[#1A43CF] to-[#3D5FDB]',
       bgGradient: 'from-[#1A43CF]/10 to-[#3D5FDB]/10',
-      frases: [
+      frases: withPhraseIds('validacion', [
         { text: '', bgImage: img64, likes: 89 },
         { text: '', bgImage: img65, likes: 102 },
         { text: '', bgImage: img66, likes: 76 },
@@ -236,15 +262,16 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
         { text: '', bgImage: img83, likes: 102 },
         { text: '', bgImage: img84, likes: 76 },
         { text: '', bgImage: img85, likes: 94 }
-      ]
+      ])
     },
     {
+      id: 'implementacion',
       icon: Rocket,
       title: 'Lanzar e Impactar: Implementación y Escalabilidad',
       description: 'Cuando la innovación trasciende lo individual para convertirse en un impacto colectivo.',
       gradient: 'from-[#EE5A41] to-[#F27D68]',
       bgGradient: 'from-[#EE5A41]/10 to-[#F27D68]/10',
-       frases: [
+       frases: withPhraseIds('implementacion', [
         { text: '', bgImage: img88, likes: 89 },
         { text: '', bgImage: img89, likes: 102 },
         { text: '', bgImage: img90, likes: 76 },
@@ -264,15 +291,16 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
         { text: '', bgImage: img104, likes: 76 },
         { text: '', bgImage: img105, likes: 94 },
         { text: '', bgImage: img106, likes: 94 }
-      ]
+      ])
     },
     {
+      id: 'aprendizaje',
       icon: TrendingUp,
       title: 'Después de Innovar: Aprendizaje y Evolución',
       description: 'La fase donde cada cierre se transforma en semilla de un nuevo comienzo',
       gradient: 'from-[#8A47A8] to-[#A062BF]',
       bgGradient: 'from-[#8A47A8]/10 to-[#A062BF]/10',
-      frases: [
+      frases: withPhraseIds('aprendizaje', [
         { text: '', bgImage: img109, likes: 102 },
         { text: '', bgImage: img110, likes: 76 },
         { text: '', bgImage: img111, likes: 94 },
@@ -300,9 +328,30 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
         { text: '', bgImage: img123, likes: 102 },
         { text: '', bgImage: img124, likes: 76 },
         { text: '', bgImage: img125, likes: 94 }
-      ]
+      ])
     }
   ];
+
+export const findPhraseShareTargetByImage = (imageUrl: string): PhraseShareTarget | null => {
+  for (const section of ebookSections) {
+    const phrase = section.frases.find((item) => item.bgImage === imageUrl);
+    if (phrase) {
+      return {
+        sectionId: section.id,
+        phraseId: phrase.id,
+        imageUrl: phrase.bgImage,
+      };
+    }
+  }
+
+  return null;
+};
+
+export const findSectionById = (sectionId: string): EbookSection | null =>
+  ebookSections.find((section) => section.id === sectionId) ?? null;
+
+export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
+  const sections = ebookSections;
 
   return (
     <section id="secciones" className="py-20 px-4 bg-gradient-to-br from-green-50/30 via-white to-amber-50/30">
@@ -329,7 +378,7 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
                 {section.description}
               </p>
               <button
-                onClick={() => onSectionClick({ title: section.title, gradient: section.gradient, frases: section.frases })}
+                onClick={() => onSectionClick(section)}
                 className={`px-6 py-2 bg-gradient-to-r ${section.gradient} text-white rounded-full hover:shadow-lg transition-all text-sm`}
               >
                 Explorar sección
@@ -354,7 +403,7 @@ export default function EbookSections({ onSectionClick }: EbookSectionsProps) {
                 {section.description}
               </p>
               <button
-                onClick={() => onSectionClick({ title: section.title, gradient: section.gradient, frases: section.frases })}
+                onClick={() => onSectionClick(section)}
                 className={`px-6 py-2 bg-gradient-to-r ${section.gradient} text-white rounded-full hover:shadow-lg transition-all text-sm`}
               >
                 Explorar sección

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
-import EbookSections from './components/EbookSections';
+import EbookSections, { findSectionById } from './components/EbookSections';
+import type { EbookSection } from './components/EbookSections';
 import InteractiveGallery from './components/InteractiveGallery';
 import Comparador from './components/Comparador';
 import CarouselSection from './components/CarouselSection';
@@ -12,25 +13,30 @@ import Footer from './components/Footer';
 import SectionModal from './components/SectionModal';
 
 export default function App() {
-  const [modalSection, setModalSection] = useState<{
-    title: string;
-    gradient: string;
-    frases: Array<{
-      text: string;
-      bgImage: string;
-      likes: number;
-    }>;
-  } | null>(null);
+  const [modalSection, setModalSection] = useState<EbookSection | null>(null);
+  const [highlightedPhraseId, setHighlightedPhraseId] = useState<string | null>(null);
 
-  const handleSectionClick = (section: {
-    title: string;
-    gradient: string;
-    frases: Array<{
-      text: string;
-      bgImage: string;
-      likes: number;
-    }>;
-  }) => {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sectionId = params.get('section');
+    const phraseId = params.get('phrase');
+
+    if (!sectionId || !phraseId) return;
+
+    const section = findSectionById(sectionId);
+    const phraseExists = section?.frases.some((frase) => frase.id === phraseId);
+
+    if (!section || !phraseExists) return;
+
+    window.setTimeout(() => {
+      document.getElementById('secciones')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setModalSection(section);
+      setHighlightedPhraseId(phraseId);
+    }, 100);
+  }, []);
+
+  const handleSectionClick = (section: EbookSection) => {
+    setHighlightedPhraseId(null);
     setModalSection(section);
   };
 
@@ -49,8 +55,13 @@ export default function App() {
 
       <SectionModal
         isOpen={!!modalSection}
-        onClose={() => setModalSection(null)}
+        onClose={() => {
+          setModalSection(null);
+          setHighlightedPhraseId(null);
+        }}
         section={modalSection}
+        highlightedPhraseId={highlightedPhraseId}
+        onHighlightComplete={() => setHighlightedPhraseId(null)}
       />
     </div>
   );

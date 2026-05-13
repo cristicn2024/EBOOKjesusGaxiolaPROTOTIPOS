@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Heart, TrendingUp, Share2 } from 'lucide-react';
 import ShareModal from './ShareModal';
+import { findPhraseShareTargetByImage } from './EbookSections';
+import type { PhraseShareTarget } from './EbookSections';
 import img8 from '../../imports/8.png';
 import img9 from '../../imports/9.png';
 import img10 from '../../imports/10.png';
@@ -16,7 +18,7 @@ import img93 from '../../imports/93.png';
 
 export default function InteractiveGallery() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [selectedShareTarget, setSelectedShareTarget] = useState<PhraseShareTarget | null>(null);
 
   const frases = [
     { text: '', bgImage: img8, likes: 89 },
@@ -51,7 +53,7 @@ export default function InteractiveGallery() {
   };
 
   const handleShare = (imageUrl: string) => {
-    setSelectedImage(imageUrl);
+    setSelectedShareTarget(findPhraseShareTargetByImage(imageUrl));
     setShareModalOpen(true);
   };
 
@@ -111,7 +113,7 @@ export default function InteractiveGallery() {
       <ShareModal
         isOpen={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
-        imageUrl={selectedImage}
+        shareTarget={selectedShareTarget}
       />
     </section>
   );

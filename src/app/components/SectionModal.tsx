@@ -1,26 +1,27 @@
 import { useState, useEffect } from 'react';
 import { X, Heart, Share2 } from 'lucide-react';
 import ShareModal from './ShareModal';
+import type { EbookSection, EbookPhrase, PhraseShareTarget } from './EbookSections';
 
 interface SectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  section: {
-    title: string;
-    gradient: string;
-    frases: Array<{
-      text: string;
-      bgImage: string;
-      likes: number;
-    }>;
-  } | null;
+  section: EbookSection | null;
+  highlightedPhraseId?: string | null;
+  onHighlightComplete?: () => void;
 }
 
-export default function SectionModal({ isOpen, onClose, section }: SectionModalProps) {
+export default function SectionModal({
+  isOpen,
+  onClose,
+  section,
+  highlightedPhraseId,
+  onHighlightComplete,
+}: SectionModalProps) {
   const [liked, setLiked] = useState<Record<number, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
   const [shareModalOpen, setShareModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [selectedShareTarget, setSelectedShareTarget] = useState<PhraseShareTarget | null>(null);
 
   useEffect(() => {
     if (section?.frases) {
@@ -30,6 +31,24 @@ export default function SectionModal({ isOpen, onClose, section }: SectionModalP
       setLiked({});
     }
   }, [section]);
+
+  useEffect(() => {
+    if (!isOpen || !highlightedPhraseId) return;
+
+    const scrollTimer = window.setTimeout(() => {
+      const phraseElement = document.getElementById(`phrase-${highlightedPhraseId}`);
+      phraseElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+
+    const clearTimer = window.setTimeout(() => {
+      onHighlightComplete?.();
+    }, 4500);
+
+    return () => {
+      window.clearTimeout(scrollTimer);
+      window.clearTimeout(clearTimer);
+    };
+  }, [highlightedPhraseId, isOpen, onHighlightComplete]);
 
   if (!isOpen || !section) return null;
 
@@ -44,8 +63,12 @@ export default function SectionModal({ isOpen, onClose, section }: SectionModalP
     });
   };
 
-  const handleShare = (imageUrl: string) => {
-    setSelectedImage(imageUrl);
+  const handleShare = (frase: EbookPhrase) => {
+    setSelectedShareTarget({
+      sectionId: section.id,
+      phraseId: frase.id,
+      imageUrl: frase.bgImage,
+    });
     setShareModalOpen(true);
   };
 
@@ -73,10 +96,15 @@ export default function SectionModal({ isOpen, onClose, section }: SectionModalP
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {section.frases.map((frase, index) => (
                 <div
-                  key={index}
-                  className="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+                  id={`phrase-${frase.id}`}
+                  key={frase.id}
+                  className={`group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                    highlightedPhraseId === frase.id
+                      ? 'animate-[phrase-highlight_1s_ease-in-out_4] ring-4 ring-[#1A43CF]/70'
+                      : ''
+                  }`}
                 >
-                  <div className="w-full h-64 relative cursor-pointer" onClick={() => handleShare(frase.bgImage)}>
+                  <div className="w-full h-64 relative cursor-pointer" onClick={() => handleShare(frase)}>
                     <img
                       src={frase.bgImage}
                       alt={`Frase ${index + 1}`}
@@ -119,7 +147,7 @@ export default function SectionModal({ isOpen, onClose, section }: SectionModalP
       <ShareModal
         isOpen={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
-        imageUrl={selectedImage}
+        shareTarget={selectedShareTarget}
       />
     </div>
   );
