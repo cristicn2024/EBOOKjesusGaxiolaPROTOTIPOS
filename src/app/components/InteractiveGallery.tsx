@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, TrendingUp, Share2 } from 'lucide-react';
 import ShareModal from './ShareModal';
+
 import img8 from '../../imports/8.png';
 import img9 from '../../imports/9.png';
 import img10 from '../../imports/10.png';
@@ -14,40 +15,105 @@ import img92 from '../../imports/92.png';
 import img104 from '../../imports/104.png';
 import img93 from '../../imports/93.png';
 
+import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+
 export default function InteractiveGallery() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>('');
 
-  const frases = [
-    { text: '', bgImage: img8, likes: 89 },
-    { text: '', bgImage: img9, likes: 100 },
-    { text: '', bgImage: img10, likes: 33 },
-    { text: '', bgImage: img11, likes: 56 },
-    { text: '', bgImage: img12, likes: 134 },
-    { text: '', bgImage: img13, likes: 21 },
-    { text: '', bgImage: img100, likes: 234 },
-    { text: '', bgImage: img111, likes: 76 },
-    { text: '', bgImage: img98, likes: 45 },
-    { text: '', bgImage: img92, likes: 12 },
-    { text: '', bgImage: img104, likes: 91 },
-    { text: '', bgImage: img93, likes: 67 }
+  // IDs únicos para cada frase basados en el nombre de la imagen
+  const frasesData = [
+    { id: 'frase_8', bgImage: img8 },
+    { id: 'frase_9', bgImage: img9 },
+    { id: 'frase_10', bgImage: img10 },
+    { id: 'frase_11', bgImage: img11 },
+    { id: 'frase_12', bgImage: img12 },
+    { id: 'frase_13', bgImage: img13 },
+    { id: 'frase_100', bgImage: img100 },
+    { id: 'frase_111', bgImage: img111 },
+    { id: 'frase_98', bgImage: img98 },
+    { id: 'frase_92', bgImage: img92 },
+    { id: 'frase_104', bgImage: img104 },
+    { id: 'frase_93', bgImage: img93 }
   ];
 
   const [liked, setLiked] = useState<Record<number, boolean>>({});
-  const [likeCounts, setLikeCounts] = useState<Record<number, number>>(
-    frases.reduce((acc, frase, idx) => ({ ...acc, [idx]: frase.likes }), {})
-  );
+  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
 
-  const handleLike = (index: number, e: React.MouseEvent) => {
+  // 1. CARGAR DATOS AL INICIAR
+  useEffect(() => {
+    // Cargar corazones rojos desde LocalStorage
+    const savedLikes = JSON.parse(localStorage.getItem('user_likes') || '{}');
+    setLiked(savedLikes);
+
+    // Cargar conteos reales desde Firebase
+    const fetchLikes = async () => {
+      const counts: Record<number, number> = {};
+      
+      const loadPromises = frasesData.map(async (frase, index) => {
+        const docRef = doc(db, 'frases', frase.id);
+        try {
+          const docSnap = await getDoc(docRef);
+          counts[index] = docSnap.exists() ? docSnap.data().count : 0;
+        } catch (err) {
+          console.error(`Error leyendo ${frase.id}:`, err);
+          counts[index] = 0;
+        }
+      });
+
+      await Promise.all(loadPromises);
+      setLikeCounts(counts);
+    };
+
+    fetchLikes();
+  }, []);
+
+  // 2. LÓGICA DE LIKE / UNLIKE
+  const handleLike = async (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    const fraseId = frasesData[index].id;
+    const fraseRef = doc(db, 'frases', fraseId);
+    const isRemovingLike = liked[index];
+
+    // Actualización Visual Inmediata (UI)
     setLiked(prev => {
-      const newLiked = { ...prev, [index]: !prev[index] };
-      setLikeCounts(counts => ({
-        ...counts,
-        [index]: counts[index] + (newLiked[index] ? 1 : -1)
-      }));
-      return newLiked;
+      const newState = { ...prev };
+      if (isRemovingLike) {
+        delete newState[index];
+      } else {
+        newState[index] = true;
+      }
+      localStorage.setItem('user_likes', JSON.stringify(newState));
+      return newState;
     });
+
+    setLikeCounts(prev => ({
+      ...prev,
+      [index]: isRemovingLike ? (prev[index] || 1) - 1 : (prev[index] || 0) + 1
+    }));
+
+    // Actualización en Firebase
+    try {
+      const docSnap = await getDoc(fraseRef);
+      
+      if (!docSnap.exists()) {
+        // Si no existe el documento, lo creamos con 1 o 0 dependiendo de la acción
+        await setDoc(fraseRef, {
+          count: isRemovingLike ? 0 : 1,
+          last_liked: new Date()
+        });
+      } else {
+        // Si existe, usamos increment(1) o increment(-1)
+        await updateDoc(fraseRef, {
+          count: increment(isRemovingLike ? -1 : 1),
+          last_liked: new Date()
+        });
+      }
+    } catch (error) {
+      console.error("ERROR CRÍTICO: Firebase rechazó el like. Revisa las 'Rules' en la consola de Firebase.", error);
+    }
   };
 
   const handleShare = (imageUrl: string) => {
@@ -71,9 +137,9 @@ export default function InteractiveGallery() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {frases.map((frase, index) => (
+          {frasesData.map((frase, index) => (
             <div
-              key={index}
+              key={frase.id}
               className="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
               onClick={() => handleShare(frase.bgImage)}
             >
@@ -89,7 +155,9 @@ export default function InteractiveGallery() {
               </div>
               <button
                 onClick={(e) => handleLike(index, e)}
-                className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all"
+                className={`absolute top-4 right-4 z-10 backdrop-blur-sm p-2 rounded-full transition-all ${
+                  liked[index] ? 'bg-red-50' : 'bg-white/90 hover:bg-white'
+                }`}
               >
                 <Heart
                   className={`w-6 h-6 transition-colors ${
@@ -100,7 +168,7 @@ export default function InteractiveGallery() {
               <div className="absolute bottom-3 left-3">
                 <span className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-xs">
                   <Heart className={`w-3.5 h-3.5 ${liked[index] ? 'fill-red-500' : ''}`} />
-                  {likeCounts[index]}
+                  {likeCounts[index] || 0}
                 </span>
               </div>
             </div>

@@ -3,6 +3,7 @@ import { Download, Loader2 } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import emailjs from 'emailjs-com';
+    console.log("Tu llave es:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
 
 export default function DownloadSection() {
   const [nombre, setNombre] = useState('');
@@ -11,13 +12,14 @@ export default function DownloadSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const sendEmail = (nombre: string, email: string) =>
-    emailjs.send(
-      (import.meta.env as any).VITE_EMAILJS_SERVICE_ID,
-      (import.meta.env as any).VITE_EMAILJS_TEMPLATE_ID,
-      { nombre, to_email: email },
-      (import.meta.env as any).VITE_EMAILJS_PUBLIC_KEY
-    );
+  // Cambia tu función sendEmail por esta:
+const sendEmail = (nombre: string, email: string) =>
+  emailjs.send(
+    import.meta.env.VITE_EMAILJS_SERVICE_ID,
+    import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+    { nombre, to_email: email },
+    import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();

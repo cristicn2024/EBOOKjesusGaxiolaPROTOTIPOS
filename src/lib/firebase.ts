@@ -1,7 +1,7 @@
+/// <reference types="vite/client" />
+
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-
-console.log('ENV:', import.meta.env);
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
