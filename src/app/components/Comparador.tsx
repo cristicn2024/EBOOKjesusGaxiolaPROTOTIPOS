@@ -1,46 +1,38 @@
-import { useState } from 'react';
-import img8 from '../../imports/8.png';
-import img9 from '../../imports/9.png';
-import img10 from '../../imports/10.png';
-import img11 from '../../imports/11.png';
-import img12 from '../../imports/12.png';
-import img13 from '../../imports/13.png';
-import img100 from '../../imports/100.png';
-import img111 from '../../imports/111.png';
-import img98 from '../../imports/98.png';
-import img92 from '../../imports/92.png';
-import img104 from '../../imports/104.png';
-import img93 from '../../imports/93.png';
+import { useState, useEffect } from 'react';
+
+// Esto es como un truco de Vite para que importe todas las imagenes y no hacerlo 1 por una (son muchas ps)
+const imageModules = import.meta.glob<{ default: string }>('../../imports/[0-9]*.png', { eager: true });
+const allImages = Object.values(imageModules).map(mod => mod.default);
 
 export default function Comparador() {
-  const imagePairs = [
-    {
-      left: { text: '', bgImage: img8, likes: 89 },
-      right: { text: '', bgImage: img100, likes: 9 }
-    },
-    {
-       left: { text: '', bgImage: img9, likes: 103 },
-      right: { text: '', bgImage: img111, likes: 45 }
-    },
-    {
-       left: { text: '', bgImage: img10, likes: 65 },
-      right: { text: '', bgImage: img98, likes: 29 }
-    },
-    {
-       left: { text: '', bgImage: img11, likes: 89 },
-      right: { text: '', bgImage: img92, likes: 9 }
-    }
-  ];
+  const [currentPair, setCurrentPair] = useState<{ left: string, right: string }>({ left: '', right: '' });
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const pickRandomPair = () => {
+    if (allImages.length < 2) return;
 
-  const handleChoice = (choice: 'left' | 'right') => {
-    if (currentIndex < imagePairs.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      setCurrentIndex(0);
+    const randomIndex1 = Math.floor(Math.random() * allImages.length);
+    let randomIndex2 = Math.floor(Math.random() * allImages.length);
+
+    // Validacion para que nunca salga la misma imagen en ambos lados
+    while (randomIndex1 === randomIndex2) {
+      randomIndex2 = Math.floor(Math.random() * allImages.length);
     }
+
+    setCurrentPair({
+      left: allImages[randomIndex1],
+      right: allImages[randomIndex2]
+    });
   };
+
+  useEffect(() => {
+    pickRandomPair();
+  }, []);
+
+  const handleChoice = () => {
+    pickRandomPair();
+  };
+
+  if (!currentPair.left) return null;
 
   return (
     <section id="comparador" className="py-20 px-4 bg-gradient-to-br from-orange-50 via-white to-red-50">
@@ -53,12 +45,12 @@ export default function Comparador() {
 
         <div className="grid md:grid-cols-2 gap-8">
           <div
-            onClick={() => handleChoice('left')}
+            onClick={handleChoice}
             className="group relative cursor-pointer"
           >
             <div className="w-full bg-white rounded-2xl shadow-xl overflow-hidden relative flex items-center justify-center p-4" style={{ minHeight: '500px' }}>
               <img
-                src={imagePairs[currentIndex].left.bgImage}
+                src={currentPair.left}
                 alt="Opción izquierda"
                 className="max-w-full max-h-full object-contain"
               />
@@ -67,12 +59,12 @@ export default function Comparador() {
           </div>
 
           <div
-            onClick={() => handleChoice('right')}
+            onClick={handleChoice}
             className="group relative cursor-pointer"
           >
             <div className="w-full bg-white rounded-2xl shadow-xl overflow-hidden relative flex items-center justify-center p-4" style={{ minHeight: '500px' }}>
               <img
-                src={imagePairs[currentIndex].right.bgImage}
+                src={currentPair.right}
                 alt="Opción derecha"
                 className="max-w-full max-h-full object-contain"
               />
