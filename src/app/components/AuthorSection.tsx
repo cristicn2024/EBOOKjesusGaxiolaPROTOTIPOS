@@ -1,4 +1,4 @@
-import { Linkedin, Youtube, Globe, Twitter, Award, Users, Presentation, BookOpen } from 'lucide-react';
+import { Linkedin, Youtube, Globe, Twitter, Award, Users, Presentation, BookOpen, Coffee } from 'lucide-react';
 
 export default function AuthorSection() {
   const stats = [
@@ -81,6 +81,22 @@ export default function AuthorSection() {
                   <social.icon className="w-5 h-5" />
                 </a>
               ))}
+            </div>
+
+            {/* Sección de Apoyo con título y botón */}
+            <div className="pt-4 space-y-3">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                Apoya al autor
+              </p>
+              <a
+                href="https://buymeacoffee.com/jesusgaxiola"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#FFDD00] to-[#FBB034] text-gray-900 font-bold rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-md border border-yellow-400"
+              >
+                <Coffee className="w-6 h-6" />
+                <span>Invítame un café</span>
+              </a>
             </div>
           </div>
 
