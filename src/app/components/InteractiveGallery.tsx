@@ -16,10 +16,15 @@ import img93 from '../../imports/93.png';
 
 import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import { findPhraseShareTargetByImage, PhraseShareTarget } from './EbookSections';
 
 export default function InteractiveGallery() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedShareTarget, setSelectedShareTarget] = useState<PhraseShareTarget | null>(null);
+  const [liked, setLiked] = useState<Record<number, boolean>>({});
+  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+  const [monthlyLikeCounts, setMonthlyLikeCounts] = useState<Record<number, number>>({});
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); 
 
   // IDs únicos para cada frase basados en el nombre de la imagen
   const frasesData = [
@@ -37,9 +42,6 @@ export default function InteractiveGallery() {
     { id: 'frase_93', bgImage: img93 }
   ];
 
-  const [liked, setLiked] = useState<Record<number, boolean>>({});
-  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
-  const [monthlyLikeCounts, setMonthlyLikeCounts] = useState<Record<number, number>>({});
 
   // 1. CARGAR DATOS AL INICIAR
   useEffect(() => {
@@ -127,7 +129,6 @@ export default function InteractiveGallery() {
     }
   };
 
-const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
 const handleShare = (imageUrl: string) => {
   setSelectedShareTarget(findPhraseShareTargetByImage(imageUrl));

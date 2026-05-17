@@ -27,12 +27,9 @@ export default function SectionModal({
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedShareTarget, setSelectedShareTarget] = useState<PhraseShareTarget | null>(null);
-<<<<<<< HEAD
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   // 2. Cargar datos de Firebase y LocalStorage al abrir el modal
-=======
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
->>>>>>> Asiel&Cristi_Branch
   useEffect(() => {
     if (!isOpen || !section?.frases) return;
 
