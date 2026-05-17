@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Heart, TrendingUp, Share2 } from 'lucide-react';
 import ShareModal from './ShareModal';
-
 import img8 from '../../imports/8.png';
 import img9 from '../../imports/9.png';
 import img10 from '../../imports/10.png';
@@ -20,7 +19,7 @@ import { db } from '../../lib/firebase';
 
 export default function InteractiveGallery() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [selectedShareTarget, setSelectedShareTarget] = useState<PhraseShareTarget | null>(null);
 
   // IDs únicos para cada frase basados en el nombre de la imagen
   const frasesData = [
@@ -117,7 +116,7 @@ export default function InteractiveGallery() {
   };
 
   const handleShare = (imageUrl: string) => {
-    setSelectedImage(imageUrl);
+    setSelectedShareTarget(findPhraseShareTargetByImage(imageUrl));
     setShareModalOpen(true);
   };
 
@@ -179,7 +178,7 @@ export default function InteractiveGallery() {
       <ShareModal
         isOpen={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
-        imageUrl={selectedImage}
+        shareTarget={selectedShareTarget}
       />
     </section>
   );

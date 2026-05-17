@@ -1,18 +1,28 @@
 import { X, Facebook, Twitter, Linkedin, Link as LinkIcon, MessageCircle, Instagram } from 'lucide-react';
 import { useState } from 'react';
+import type { PhraseShareTarget } from './EbookSections';
 
 interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
-  imageUrl: string;
+  shareTarget: PhraseShareTarget | null;
 }
 
-export default function ShareModal({ isOpen, onClose, imageUrl }: ShareModalProps) {
+export default function ShareModal({ isOpen, onClose, shareTarget }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
 
-  const shareUrl = window.location.href;
+  const shareUrl = (() => {
+    const url = new URL(window.location.origin + window.location.pathname);
+
+    if (shareTarget) {
+      url.searchParams.set('section', shareTarget.sectionId);
+      url.searchParams.set('phrase', shareTarget.phraseId);
+    }
+
+    return url.toString();
+  })();
   const shareText = 'Mira esta frase inspiradora de "El Mindset Innovador"';
 
   const handleCopyLink = () => {
