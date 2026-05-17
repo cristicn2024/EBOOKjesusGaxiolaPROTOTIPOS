@@ -52,10 +52,14 @@ export default function InteractiveGallery() {
     });
   };
 
-  const handleShare = (imageUrl: string) => {
-    setSelectedShareTarget(findPhraseShareTargetByImage(imageUrl));
-    setShareModalOpen(true);
-  };
+const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+const handleShare = (imageUrl: string) => {
+  setSelectedShareTarget(findPhraseShareTargetByImage(imageUrl));
+  setSelectedImage(imageUrl); // 👈
+  setShareModalOpen(true);
+};
+
 
   return (
     <section id="galeria" className="py-20 px-4 bg-gradient-to-br from-white via-purple-50 to-blue-50">
@@ -114,6 +118,7 @@ export default function InteractiveGallery() {
         isOpen={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
         shareTarget={selectedShareTarget}
+        phraseImage={selectedImage ?? undefined}
       />
     </section>
   );
