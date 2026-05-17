@@ -27,8 +27,12 @@ export default function SectionModal({
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedShareTarget, setSelectedShareTarget] = useState<PhraseShareTarget | null>(null);
+<<<<<<< HEAD
 
   // 2. Cargar datos de Firebase y LocalStorage al abrir el modal
+=======
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+>>>>>>> Asiel&Cristi_Branch
   useEffect(() => {
     if (!isOpen || !section?.frases) return;
 
@@ -122,14 +126,17 @@ export default function SectionModal({
     }
   };
 
-  const handleShare = (frase: EbookPhrase) => {
-    setSelectedShareTarget({
-      sectionId: section.id,
-      phraseId: frase.id,
-      imageUrl: frase.bgImage,
-    });
-    setShareModalOpen(true);
-  };
+
+const handleShare = (frase: EbookPhrase) => {
+  setSelectedShareTarget({
+    sectionId: section.id,
+    phraseId: frase.id,
+    imageUrl: frase.bgImage,
+  });
+  setSelectedImage(frase.bgImage); // 👈
+  setShareModalOpen(true);
+};
+
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -209,6 +216,7 @@ export default function SectionModal({
         isOpen={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
         shareTarget={selectedShareTarget}
+        phraseImage={selectedImage ?? undefined}
       />
     </div>
   );
