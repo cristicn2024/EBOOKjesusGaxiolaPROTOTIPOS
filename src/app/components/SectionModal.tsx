@@ -3,6 +3,10 @@ import { X, Heart, Share2 } from 'lucide-react';
 import ShareModal from './ShareModal';
 import type { EbookSection, EbookPhrase, PhraseShareTarget } from './EbookSections';
 
+// 1. Importamos Firebase
+import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+
 interface SectionModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,19 +22,42 @@ export default function SectionModal({
   highlightedPhraseId,
   onHighlightComplete,
 }: SectionModalProps) {
-  const [liked, setLiked] = useState<Record<number, boolean>>({});
-  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+  // Ahora usamos string (frase.id) en lugar de number (index) para evitar que se mezclen secciones
+  const [liked, setLiked] = useState<Record<string, boolean>>({});
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedShareTarget, setSelectedShareTarget] = useState<PhraseShareTarget | null>(null);
 
+  // 2. Cargar datos de Firebase y LocalStorage al abrir el modal
   useEffect(() => {
-    if (section?.frases) {
-      setLikeCounts(
-        section.frases.reduce((acc, frase, idx) => ({ ...acc, [idx]: frase.likes }), {})
-      );
-      setLiked({});
-    }
-  }, [section]);
+    if (!isOpen || !section?.frases) return;
+
+    // Cargar likes locales (para saber si el usuario ya votó)
+    const savedLikes = JSON.parse(localStorage.getItem('user_likes') || '{}');
+    setLiked(savedLikes);
+
+    // Cargar conteos reales desde Firebase
+    const fetchLikes = async () => {
+      const counts: Record<string, number> = {};
+      
+      const loadPromises = section.frases.map(async (frase) => {
+        // Usamos el ID único de la frase (ej: 'semilla-1')
+        const docRef = doc(db, 'frases', frase.id);
+        try {
+          const docSnap = await getDoc(docRef);
+          counts[frase.id] = docSnap.exists() ? docSnap.data().count : 0;
+        } catch (err) {
+          console.error(`Error leyendo ${frase.id}:`, err);
+          counts[frase.id] = 0;
+        }
+      });
+
+      await Promise.all(loadPromises);
+      setLikeCounts(counts);
+    };
+
+    fetchLikes();
+  }, [section, isOpen]);
 
   useEffect(() => {
     if (!isOpen || !highlightedPhraseId) return;
@@ -52,15 +79,47 @@ export default function SectionModal({
 
   if (!isOpen || !section) return null;
 
-  const handleLike = (index: number) => {
+  // 3. Lógica de dar/quitar Like conectada a Firebase
+  const handleLike = async (frase: EbookPhrase) => {
+    const fraseId = frase.id;
+    const fraseRef = doc(db, 'frases', fraseId);
+    const isRemovingLike = liked[fraseId];
+
+    // Actualización visual inmediata
     setLiked(prev => {
-      const newLiked = { ...prev, [index]: !prev[index] };
-      setLikeCounts(counts => ({
-        ...counts,
-        [index]: counts[index] + (newLiked[index] ? 1 : -1)
-      }));
-      return newLiked;
+      const newState = { ...prev };
+      if (isRemovingLike) {
+        delete newState[fraseId];
+      } else {
+        newState[fraseId] = true;
+      }
+      localStorage.setItem('user_likes', JSON.stringify(newState));
+      return newState;
     });
+
+    setLikeCounts(prev => ({
+      ...prev,
+      [fraseId]: isRemovingLike ? Math.max(0, (prev[fraseId] || 1) - 1) : (prev[fraseId] || 0) + 1
+    }));
+
+    // Actualización en Firebase
+    try {
+      const docSnap = await getDoc(fraseRef);
+      
+      if (!docSnap.exists()) {
+        await setDoc(fraseRef, {
+          count: isRemovingLike ? 0 : 1,
+          last_liked: new Date()
+        });
+      } else {
+        await updateDoc(fraseRef, {
+          count: increment(isRemovingLike ? -1 : 1),
+          last_liked: new Date()
+        });
+      }
+    } catch (error) {
+      console.error("Error al guardar el like en Firebase:", error);
+    }
   };
 
   const handleShare = (frase: EbookPhrase) => {
@@ -122,19 +181,21 @@ export default function SectionModal({
                     </div>
                   </div>
                   <button
-                    onClick={() => handleLike(index)}
-                    className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all"
+                    onClick={() => handleLike(frase)}
+                    className={`absolute top-4 right-4 z-10 backdrop-blur-sm p-2 rounded-full transition-all ${
+                      liked[frase.id] ? 'bg-red-50' : 'bg-white/90 hover:bg-white'
+                    }`}
                   >
                     <Heart
                       className={`w-6 h-6 transition-colors ${
-                        liked[index] ? 'fill-red-500 text-red-500' : 'text-gray-700'
+                        liked[frase.id] ? 'fill-red-500 text-red-500' : 'text-gray-700'
                       }`}
                     />
                   </button>
                   <div className="absolute bottom-3 left-3">
                     <span className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-xs">
-                      <Heart className={`w-3.5 h-3.5 ${liked[index] ? 'fill-red-500' : ''}`} />
-                      {likeCounts[index]}
+                      <Heart className={`w-3.5 h-3.5 ${liked[frase.id] ? 'fill-red-500' : ''}`} />
+                      {likeCounts[frase.id] || 0}
                     </span>
                   </div>
                 </div>
