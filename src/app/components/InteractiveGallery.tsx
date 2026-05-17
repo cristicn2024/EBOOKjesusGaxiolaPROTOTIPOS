@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Heart, TrendingUp, Share2 } from 'lucide-react';
 import ShareModal from './ShareModal';
 import img8 from '../../imports/8.png';
@@ -39,6 +39,7 @@ export default function InteractiveGallery() {
 
   const [liked, setLiked] = useState<Record<number, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+  const [monthlyLikeCounts, setMonthlyLikeCounts] = useState<Record<number, number>>({});
 
   // 1. CARGAR DATOS AL INICIAR
   useEffect(() => {
@@ -49,20 +50,24 @@ export default function InteractiveGallery() {
     // Cargar conteos reales desde Firebase
     const fetchLikes = async () => {
       const counts: Record<number, number> = {};
+      const monthlyCounts: Record<number, number> = {};
       
       const loadPromises = frasesData.map(async (frase, index) => {
         const docRef = doc(db, 'frases', frase.id);
         try {
           const docSnap = await getDoc(docRef);
           counts[index] = docSnap.exists() ? docSnap.data().count : 0;
+          monthlyCounts[index] = docSnap.exists() ? docSnap.data().currentMonthLikes : 0;
         } catch (err) {
           console.error(`Error leyendo ${frase.id}:`, err);
           counts[index] = 0;
+          monthlyCounts[index] = 0;
         }
       });
 
       await Promise.all(loadPromises);
       setLikeCounts(counts);
+      setMonthlyLikeCounts(monthlyCounts);
     };
 
     fetchLikes();
@@ -93,6 +98,11 @@ export default function InteractiveGallery() {
       [index]: isRemovingLike ? (prev[index] || 1) - 1 : (prev[index] || 0) + 1
     }));
 
+    setMonthlyLikeCounts(prev => ({
+      ...prev,
+      [index]: isRemovingLike ? (prev[index] || 1) - 1 : (prev[index] || 0) + 1
+    }));
+
     // Actualización en Firebase
     try {
       const docSnap = await getDoc(fraseRef);
@@ -101,12 +111,14 @@ export default function InteractiveGallery() {
         // Si no existe el documento, lo creamos con 1 o 0 dependiendo de la acción
         await setDoc(fraseRef, {
           count: isRemovingLike ? 0 : 1,
+          currentMonthLikes: isRemovingLike ? 0 : 1,
           last_liked: new Date()
         });
       } else {
         // Si existe, usamos increment(1) o increment(-1)
         await updateDoc(fraseRef, {
           count: increment(isRemovingLike ? -1 : 1),
+          currentMonthLikes: increment(isRemovingLike ? -1 : 1),
           last_liked: new Date()
         });
       }
@@ -120,6 +132,13 @@ export default function InteractiveGallery() {
     setShareModalOpen(true);
   };
 
+  // Ordenar frases por likes mensuales (mayor a menor)
+  const sortedFrasesIndices = useMemo(() => {
+    return frasesData
+      .map((_, index) => index)
+      .sort((a, b) => (monthlyLikeCounts[b] || 0) - (monthlyLikeCounts[a] || 0));
+  }, [monthlyLikeCounts]);
+
   return (
     <section id="galeria" className="py-20 px-4 bg-gradient-to-br from-white via-purple-50 to-blue-50">
       <div className="max-w-7xl mx-auto">
@@ -131,12 +150,14 @@ export default function InteractiveGallery() {
             </h2>
           </div>
           <p className="text-gray-600">
-            Las frases favoritas de la comunidad en este momento
+            Las frases favoritas de la comunidad este mes
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {frasesData.map((frase, index) => (
+          {sortedFrasesIndices.map((index) => {
+            const frase = frasesData[index];
+            return (
             <div
               key={frase.id}
               className="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
@@ -167,11 +188,12 @@ export default function InteractiveGallery() {
               <div className="absolute bottom-3 left-3">
                 <span className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full text-white text-xs">
                   <Heart className={`w-3.5 h-3.5 ${liked[index] ? 'fill-red-500' : ''}`} />
-                  {likeCounts[index] || 0}
+                  {monthlyLikeCounts[index] || 0}
                 </span>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

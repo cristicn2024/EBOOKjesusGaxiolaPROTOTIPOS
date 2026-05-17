@@ -11,10 +11,16 @@ import AuthorSection from './components/AuthorSection';
 import DownloadSection from './components/DownloadSection';
 import Footer from './components/Footer';
 import SectionModal from './components/SectionModal';
+import { resetMonthlyLikesIfNeeded } from '../lib/monthlyReset';
 
 export default function App() {
   const [modalSection, setModalSection] = useState<EbookSection | null>(null);
   const [highlightedPhraseId, setHighlightedPhraseId] = useState<string | null>(null);
+
+  // Ejecutar reset mensual al cargar la aplicación
+  useEffect(() => {
+    resetMonthlyLikesIfNeeded();
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
